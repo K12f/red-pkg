@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"math"
 	"os"
 )
 
@@ -39,7 +40,7 @@ func (i *imageR) ReadPNG(filename string) error {
 	return err
 }
 
-func (i imageR) Scan(col ColorR) (Result, error) {
+func (i imageR) Scan(col ColorR, isHalf bool) (Result, error) {
 	var result Result
 	var err error
 	var im = i.im
@@ -47,9 +48,17 @@ func (i imageR) Scan(col ColorR) (Result, error) {
 	height := im.Bounds().Max.Y
 	//2.扫描屏幕到下一步
 	//widthMid := int(math.Ceil(float64(width / 2)))
-	//heightMid := int(math.Ceil(float64(height / 2)))
-	for h := height; h > 0; h-- {
-		for w := 0; w < width; w++ {
+	heightMid := int(math.Ceil(float64(height / 2)))
+	heightStart := height
+	heightEnd := 0
+	if isHalf {
+		heightEnd = heightMid
+		heightStart = int(math.Ceil(float64(height / 5)))
+	}
+	debug(im, 1, 200, heightStart)
+	debug(im, 2, 200, heightEnd)
+	for w := 0; w < width; w++ {
+		for h := heightStart; h > heightEnd; h-- {
 			pointColor := im.At(w, h)
 
 			r := pointColor.(color.NRGBA).R
@@ -64,7 +73,7 @@ func (i imageR) Scan(col ColorR) (Result, error) {
 				pointW := w
 				pointH := h
 
-				debug(im, w, pointH)
+				debug(im, 3, w, pointH)
 
 				return Result{pointW, pointH}, err
 			}
@@ -73,8 +82,9 @@ func (i imageR) Scan(col ColorR) (Result, error) {
 	return result, errors.New("未发现相似的rgb")
 }
 
-func debug(im image.Image, width, height int) {
-	des, _ := os.Create("./images/screen1.png")
+func debug(im image.Image, name int, width, height int) {
+	path := fmt.Sprintf("./images/screen%d.png", name)
+	des, _ := os.Create(path)
 	//_, err = io.Copy(des, file)
 
 	defer des.Close()

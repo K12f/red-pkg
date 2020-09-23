@@ -36,14 +36,14 @@ func (k Kernel) handle() {
 	adb := NewAdb()
 
 	fmt.Println("红包...")
-	err = adb.Run(name, target, config.Red)
+	err = adb.Run(name, target, config.Red, false)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(1 * time.Second)
 	fmt.Println("开...")
 	nameOpen := "screen_open.png"
-	err = adb.Run(nameOpen, target, config.Open)
+	err = adb.Run(nameOpen, target, config.Open, true)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -37,7 +37,7 @@ func (a adb) command(arg ...string) error {
 	return err
 }
 
-func (a adb) Run(name, target string, colorR ColorR) error {
+func (a adb) Run(name, target string, colorR ColorR, isHalf bool) error {
 	var err error
 	err = a.Pull(name, target)
 	if err != nil {
@@ -55,7 +55,7 @@ func (a adb) Run(name, target string, colorR ColorR) error {
 	fmt.Println("开始扫描图片...")
 
 	//4.拿到句柄 开始扫描图片
-	redPositionResult, err := imageK.Scan(colorR)
+	redPositionResult, err := imageK.Scan(colorR, isHalf)
 	if err != nil {
 		log.Fatal(err)
 	}
