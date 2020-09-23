@@ -3,6 +3,7 @@ package rekpkg
 import (
 	"fmt"
 	"log"
+	"time"
 )
 
 type Kernel struct {
@@ -18,26 +19,32 @@ func (k Kernel) StartUp() {
 
 func (k Kernel) handle() {
 	//1.读取配置文件
-	path := "../config.json"
-	config := NewConfig()
+	fmt.Println("正在读取配置...")
+	path := "./config.json"
+	c := NewConfig()
 
-	config.Parse(path)
+	config, err := c.Get(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("正在拉取截图...")
+
 	//2. 检测并拉去手机截图
 	name := "screen.png"
 	target := "./images/"
 	adb := NewAdb()
 
-	err := adb.Pull(name, target)
+	fmt.Println("红包...")
+	err = adb.Run(name, target, config.Red)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//3.读取分析截图
-	imageK := NewimageR()
-	filename := fmt.Sprintf("%s%s", target, name)
-	err = imageK.ReadPNG(filename)
+	time.Sleep(1 * time.Second)
+	fmt.Println("开...")
+	nameOpen := "screen_open.png"
+	err = adb.Run(nameOpen, target, config.Open)
 	if err != nil {
 		log.Fatal(err)
 	}
-	//4.拿到句柄 开始扫描图片
 }

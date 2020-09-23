@@ -1,5 +1,7 @@
 package rekpkg
 
 type ColorR struct {
-	r, g, b int
+	R int `json:"r"`
+	G int `json:"g"`
+	B int `json:"b"`
 }

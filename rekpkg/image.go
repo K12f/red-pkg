@@ -7,7 +7,6 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
-	"math"
 	"os"
 )
 
@@ -47,44 +46,44 @@ func (i imageR) Scan(col ColorR) (Result, error) {
 	width := im.Bounds().Max.X
 	height := im.Bounds().Max.Y
 	//2.扫描屏幕到下一步
-	widthMid := int(math.Ceil(float64(width / 2)))
+	//widthMid := int(math.Ceil(float64(width / 2)))
 	//heightMid := int(math.Ceil(float64(height / 2)))
-	newIm := image.NewRGBA(im.Bounds())
-	red := color.NRGBA{0, 0, 0, 255}
-
-	draw.Draw(newIm, im.Bounds(), im, newIm.Bounds().Min, draw.Src)
-
-	tempW := 0
-	for w := 0; w < width; w++ {
-		for h := height; h > 0; h-- {
+	for h := height; h > 0; h-- {
+		for w := 0; w < width; w++ {
 			pointColor := im.At(w, h)
 
 			r := pointColor.(color.NRGBA).R
 			g := pointColor.(color.NRGBA).G
 			b := pointColor.(color.NRGBA).B
 
-			if r >= uint8(col.r-10) && r <= uint8(col.r) &&
-				g >= uint8(col.g-20) && g <= uint8(col.g+20) &&
-				b >= uint8(col.b-20) && b <= uint8(col.b+20) {
+			if r >= uint8(col.R-20) && r <= uint8(col.R) &&
+				g >= uint8(col.G-20) && g <= uint8(col.G+20) &&
+				b >= uint8(col.B-20) && b <= uint8(col.B+20) {
 
-				//有一次颜色一样，记录一下
-				tempW = (w + widthMid)
+				fmt.Println(r, g, b)
+				pointW := w
+				pointH := h
 
-				pointColor := im.At(tempW, h)
+				debug(im, w, pointH)
 
-				r2 := pointColor.(color.NRGBA).R
-				g2 := pointColor.(color.NRGBA).G
-				b2 := pointColor.(color.NRGBA).B
-				if r2 == r && g2 == g && b2 == b {
-					fmt.Println(r, g, b)
-					pointW := w + widthMid/2
-					pointH := h + 10
-					newIm.Set(w+widthMid/2, h+10, red)
-
-					return Result{pointW, pointH}, err
-				}
+				return Result{pointW, pointH}, err
 			}
 		}
 	}
 	return result, errors.New("未发现相似的rgb")
+}
+
+func debug(im image.Image, width, height int) {
+	des, _ := os.Create("./images/screen1.png")
+	//_, err = io.Copy(des, file)
+
+	defer des.Close()
+	newIm := image.NewRGBA(im.Bounds())
+	draw.Draw(newIm, im.Bounds(), im, newIm.Bounds().Min, draw.Src)
+	red := color.NRGBA{0, 0, 0, 255}
+	fmt.Println(width, height)
+	for i := 0; i < 100; i++ {
+		newIm.Set(width+i, height, red)
+	}
+	_ = png.Encode(des, newIm)
 }
