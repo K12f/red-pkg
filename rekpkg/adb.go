@@ -3,7 +3,6 @@ package rekpkg
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os/exec"
 	"strconv"
 )
@@ -27,6 +26,8 @@ func (a adb) command(arg ...string) error {
 		err = exec.Command("adb", arg[0], arg[1], arg[2]).Run()
 	} else if len(arg) == 5 {
 		err = exec.Command("adb", arg[0], arg[1], arg[2], arg[3], arg[4]).Run()
+	} else if len(arg) == 7 {
+		err = exec.Command("adb", arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6]).Run()
 	} else {
 		err = errors.New("不支持的参数数量")
 	}
@@ -41,7 +42,8 @@ func (a adb) Run(name, target string, colorR ColorR, position uint) error {
 	var err error
 	err = a.Pull(name, target)
 	if err != nil {
-		log.Fatal(err)
+		return err
+
 	}
 
 	fmt.Println("正在读取分析截图...")
@@ -50,14 +52,14 @@ func (a adb) Run(name, target string, colorR ColorR, position uint) error {
 	filename := fmt.Sprintf("%s%s", target, name)
 	err = imageK.ReadPNG(filename)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Println("开始扫描图片...")
 
 	//4.拿到句柄 开始扫描图片
 	redPositionResult, err := imageK.Scan(colorR, position)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmt.Println("开始模拟点击...", redPositionResult)
@@ -65,7 +67,7 @@ func (a adb) Run(name, target string, colorR ColorR, position uint) error {
 	//5.点击
 	err = a.Touch(redPositionResult)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	return err
 }
@@ -96,6 +98,24 @@ func (a adb) Touch(result Result) error {
 	var err error
 	touchX, touchY := strconv.Itoa(result.x), strconv.Itoa(result.y)
 	err = a.command("shell", "input", "tap", touchX, touchY)
+	if err != nil {
+		err = errors.New("模拟触摸失败，请检查开发者选项中的 USB 调试安全设置是否打开")
+	}
+	return err
+}
+
+func (a adb) Swipe() error {
+	var err error
+	err = a.command("shell", "input", "swipe", "800", "1000", "200", "300")
+	if err != nil {
+		err = errors.New("模拟触摸失败，请检查开发者选项中的 USB 调试安全设置是否打开")
+	}
+	return err
+}
+
+func (a adb) Click() error {
+	var err error
+	err = a.command("shell", "input", "tap", "200", "200")
 	if err != nil {
 		err = errors.New("模拟触摸失败，请检查开发者选项中的 USB 调试安全设置是否打开")
 	}

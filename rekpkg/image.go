@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"log"
 	"math"
 	"os"
 )
@@ -55,6 +56,7 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 	widthEnd := width
 
 	switch position {
+	//适配 开红包的位置
 	case 1:
 		fixValue := int(math.Ceil(float64(width / 10)))
 
@@ -64,6 +66,7 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 		widthStart = widthMid - fixValue
 		widthEnd = widthMid + fixValue
 	case 2:
+		//适配点击红包的位置
 		fixValue := int(math.Ceil(float64(width / 10)))
 		heightStart = int(math.Ceil(float64(height*3/4))) - fixValue
 		heightEnd = heightMid + fixValue
@@ -73,13 +76,13 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 	}
 
 	black := color.NRGBA{0, 0, 0, 255}
-	//red := color.NRGBA{255, 0, 0, 255}
+	red := color.NRGBA{255, 0, 0, 255}
 
-	//path := fmt.Sprintf("./images/screen%s.png", "tmep")
-	//des, _ := os.Create(path)
-	//defer des.Close()
-	//newIm := image.NewRGBA(im.Bounds())
-	//draw.Draw(newIm, im.Bounds(), im, newIm.Bounds().Min, draw.Src)
+	path := fmt.Sprintf("./images/screen%s.png", "tmep")
+	des, _ := os.Create(path)
+	defer des.Close()
+	newIm := image.NewRGBA(im.Bounds())
+	draw.Draw(newIm, im.Bounds(), im, newIm.Bounds().Min, draw.Src)
 
 	for w := widthStart; w < widthEnd; w++ {
 		for h := heightStart; h > heightEnd; h-- {
@@ -94,18 +97,24 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 			if r >= uint8(col.R-20) && r <= uint8(col.R) &&
 				g >= uint8(col.G-20) && g <= uint8(col.G+20) &&
 				b >= uint8(col.B-20) && b <= uint8(col.B+20) {
-				//newIm.Set(w, h, red)
-				debug(im, black, 2, w, h)
+				newIm.Set(w, h, red)
+				//debug(im, black, 2, w, h)
+
+				err = png.Encode(des, newIm)
+				if err != nil {
+					log.Fatal(err)
+				}
+
 				return Result{w, h}, err
 			} else {
-				//newIm.Set(w, h, black)
+				newIm.Set(w, h, black)
 			}
 		}
 	}
-	//err = png.Encode(des, newIm)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
+	err = png.Encode(des, newIm)
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = errors.New("未发现相似的rgb")
 	return result, err
 }
