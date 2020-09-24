@@ -34,16 +34,16 @@ func (k Kernel) handle() {
 	name := "screen.png"
 	target := "./images/"
 	adb := NewAdb()
-
+	//
 	fmt.Println("红包...")
-	err = adb.Run(name, target, config.Red, false)
+	err = adb.Run(name, target, config.Red, 1)
 	if err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(1 * time.Second)
 	fmt.Println("开...")
 	nameOpen := "screen_open.png"
-	err = adb.Run(nameOpen, target, config.Open, true)
+	err = adb.Run(nameOpen, target, config.Open, 2)
 	if err != nil {
 		log.Fatal(err)
 	}
