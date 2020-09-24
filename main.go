@@ -1,19 +1,24 @@
 package main
 
 import (
-	"flag"
+	"bufio"
+	"fmt"
+	"os"
 	"red-package/rekpkg"
 )
 
 var flagV int
 
-func init() {
-	flag.IntVar(&flagV, "plat", 2, "输入你想抢红包的平台: 1.微信,2:飞书")
-}
+//func init() {
+//	flag.IntVar(&flagV, "plat", 1, "输入你想抢红包的平台: 1.微信,2:飞书")
+//}
 
 func main() {
 	// 把用户传递的命令行参数解析为对应变量的值
-	flag.Parse()
+	fmt.Println("输入你想抢红包的平台: 1.微信,2:飞书 ")
+	input := bufio.NewScanner(os.Stdin)
+	input.Scan()
+
 	k := rekpkg.NewKernel()
-	k.StartUp(flagV)
+	k.StartUp(input.Text())
 }

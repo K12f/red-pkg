@@ -12,11 +12,11 @@ func NewKernel() Kernel {
 	return Kernel{}
 }
 
-func (k Kernel) StartUp(plat int) {
+func (k Kernel) StartUp(plat string) {
 	k.handle(plat)
 }
 
-func (k Kernel) handle(plat int) {
+func (k Kernel) handle(plat string) {
 	for {
 
 		//1.读取配置文件

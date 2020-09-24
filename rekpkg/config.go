@@ -19,7 +19,7 @@ func NewConfig() *Config {
 	return &Config{}
 }
 
-func (c Config) Get(plat int, path string) (Config, error) {
+func (c Config) Get(plat string, path string) (Config, error) {
 	var PlatConfig *Plat
 	var config Config
 	data, err := ioutil.ReadFile(path)
@@ -32,9 +32,9 @@ func (c Config) Get(plat int, path string) (Config, error) {
 	}
 
 	switch plat {
-	case 1:
+	case "1":
 		config = PlatConfig.Wechat
-	case 2:
+	case "2":
 		config = PlatConfig.Feishu
 	default:
 		err = errors.New("not found plat")

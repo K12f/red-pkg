@@ -19,7 +19,7 @@ func (a adb) command(arg ...string) error {
 	if len(arg) < 3 {
 		return errors.New("参数有误")
 	}
-	fmt.Println(arg)
+	//fmt.Println(arg)
 	if len(arg) == 4 {
 		err = exec.Command("adb", arg[0], arg[1], arg[2], arg[3]).Run()
 	} else if len(arg) == 3 {
