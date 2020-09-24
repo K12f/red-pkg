@@ -19,35 +19,33 @@ func (k Kernel) StartUp(plat string) {
 }
 
 func (k Kernel) handle(plat string) {
-	for {
+	//1.读取配置文件
+	fmt.Println("正在读取配置...")
+	path := "./config.json"
+	c := NewConfig()
 
-		//1.读取配置文件
-		fmt.Println("正在读取配置...")
-		path := "./config.json"
-		c := NewConfig()
+	config, err := c.Get(plat, path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//2. 检测并拉去手机截图
+	name := "screen_red.png"
+	target := "./images/"
+	nameOpen := "screen_open.png"
 
-		config, err := c.Get(plat, path)
+	// 目录不存在就创建
+	_, err = os.Stat(path) //os.Stat获取文件信息
+	if !os.IsExist(err) {
+		err = os.Mkdir(target, 0777)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("创建目录失败")
 		}
+	}
+	adb := NewAdb()
+	for {
 
 		fmt.Println("正在拉取截图...")
 
-		//2. 检测并拉去手机截图
-		name := "screen_red.png"
-		target := "./images/"
-		nameOpen := "screen_open.png"
-
-		// 目录不存在就创建
-		_, err = os.Stat(path) //os.Stat获取文件信息
-		if !os.IsExist(err) {
-			err = os.Mkdir(target, 0777)
-			if err != nil {
-				log.Fatal("创建目录失败")
-			}
-		}
-
-		adb := NewAdb()
 		//
 		fmt.Println("红包...")
 		err = adb.Run(name, target, config.Red, 1)
