@@ -78,7 +78,7 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 	black := color.NRGBA{0, 0, 0, 255}
 	red := color.NRGBA{255, 0, 0, 255}
 
-	path := fmt.Sprintf("./images/screen%s.png", "tmep")
+	path := fmt.Sprintf("./images/screen%d.png", position)
 	des, _ := os.Create(path)
 	defer des.Close()
 	newIm := image.NewRGBA(im.Bounds())

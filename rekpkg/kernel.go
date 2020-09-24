@@ -34,7 +34,7 @@ func (k Kernel) handle(plat string) {
 		fmt.Println("正在拉取截图...")
 
 		//2. 检测并拉去手机截图
-		name := "screen.png"
+		name := "screen_red.png"
 		target := "./images/"
 		nameOpen := "screen_open.png"
 
