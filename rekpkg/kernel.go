@@ -2,6 +2,8 @@ package rekpkg
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 )
 
@@ -26,9 +28,7 @@ func (k Kernel) handle(plat string) {
 
 		config, err := c.Get(plat, path)
 		if err != nil {
-			//log.Fatal(err)
-			fmt.Println(err)
-			//continue
+			log.Fatal(err)
 		}
 
 		fmt.Println("正在拉取截图...")
@@ -37,6 +37,15 @@ func (k Kernel) handle(plat string) {
 		name := "screen_red.png"
 		target := "./images/"
 		nameOpen := "screen_open.png"
+
+		// 目录不存在就创建
+		_, err = os.Stat(path) //os.Stat获取文件信息
+		if !os.IsExist(err) {
+			err = os.Mkdir(target, 0777)
+			if err != nil {
+				log.Fatal("创建目录失败")
+			}
+		}
 
 		adb := NewAdb()
 		//
