@@ -2,7 +2,6 @@
 > 使用adb，支持飞书和微信的抢红包工具
 
 
-#### How to use
 ##### 支持的平台 
 > 输入你想抢红包的平台: 1.微信,2:飞书  
 > 你可以自己在config.json中 添加 你想获取的颜色，目前位置做了适配，只取中间的颜色，具体可在images文件中查看，也可以在 rekpkg/image.go 中修改 postion，并在 rekpkg/config.go 中 修改代码
