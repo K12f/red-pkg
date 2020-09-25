@@ -51,15 +51,18 @@ func (k Kernel) handle(plat string) {
 		err = adb.Run(name, target, config.Red, 1)
 		if err != nil {
 			fmt.Println(err)
-			goto swipe
+			//可能红包已经被点开
+		} else {
+			//等待loading红包出来，和网速之类的有关
+			time.Sleep(500 * time.Millisecond)
 		}
 
-		//等待loading红包出来，和网速之类的有关
-		time.Sleep(500 * time.Millisecond)
 		fmt.Println("开...")
+
 		err = adb.Run(nameOpen, target, config.Open, 2)
 		if err != nil {
 			fmt.Println(err)
+			//下滑
 			goto swipe
 		}
 
