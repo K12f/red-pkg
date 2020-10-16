@@ -1,4 +1,4 @@
-package rekpkg
+package core
 
 import (
 	"fmt"

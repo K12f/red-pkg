@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"red-package/rekpkg"
+	"red-package/core"
 )
 
 func main() {
@@ -13,6 +13,6 @@ func main() {
 	input := bufio.NewScanner(os.Stdin)
 	input.Scan()
 
-	k := rekpkg.NewKernel()
+	k := core.NewKernel()
 	k.StartUp(input.Text())
 }

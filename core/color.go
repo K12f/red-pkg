@@ -1,4 +1,4 @@
-package rekpkg
+package core
 
 type ColorR struct {
 	R int `json:"r"`
