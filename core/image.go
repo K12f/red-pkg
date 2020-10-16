@@ -16,12 +16,14 @@ type imageR struct {
 	im image.Image
 }
 
+//Result 结果
 type Result struct {
 	x, y int
 }
 
-func NewimageR() *imageR {
-	return &imageR{}
+//NewimageR 初始化Image
+func NewimageR() imageR {
+	return imageR{}
 }
 
 func (i *imageR) ReadPNG(filename string) error {
@@ -43,7 +45,7 @@ func (i *imageR) ReadPNG(filename string) error {
 
 func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 	var result Result
-	var err error
+	var err error = errors.New("未发现相似的rgb")
 	var im = i.im
 	width := im.Bounds().Max.X
 	height := im.Bounds().Max.Y
@@ -105,17 +107,20 @@ func (i imageR) Scan(col ColorR, position uint) (Result, error) {
 					log.Fatal(err)
 				}
 
-				return Result{w, h}, err
+				result.x = w
+				result.y = h
+				err = nil
+				goto end
 			} else {
 				newIm.Set(w, h, black)
 			}
 		}
 	}
+end:
 	err = png.Encode(des, newIm)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = errors.New("未发现相似的rgb")
 	return result, err
 }
 

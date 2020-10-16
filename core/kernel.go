@@ -7,13 +7,16 @@ import (
 	"time"
 )
 
+//Kernel fdas
 type Kernel struct {
 }
 
+//NewKernel test
 func NewKernel() Kernel {
 	return Kernel{}
 }
 
+//StartUp fdas
 func (k Kernel) StartUp(plat string) {
 	k.handle(plat)
 }

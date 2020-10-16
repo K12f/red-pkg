@@ -10,8 +10,9 @@ import (
 type adb struct {
 }
 
-func NewAdb() *adb {
-	return &adb{}
+//NewAdb 初始化
+func NewAdb() adb {
+	return adb{}
 }
 
 func (a adb) command(arg ...string) error {
